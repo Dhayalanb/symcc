@@ -61,6 +61,17 @@ void loadConfig() {
   if (aflCoverageMap != nullptr)
     g_config.aflCoverageMap = aflCoverageMap;
 
+  auto *symbolicBytes = getenv("SYMCC_SYMBOLIC_BYTES");
+  if (symbolicBytes != nullptr) {
+    g_config.partialSymbolic = true;
+    std::string segment;
+    std::stringstream stringStream(symbolicBytes);
+    while(std::getline(stringStream, segment, ','))
+    {
+      g_config.symbolicBytes.push_back(std::stoi(segment));
+    }
+  }
+
   auto *garbageCollectionThreshold = getenv("SYMCC_GC_THRESHOLD");
   if (garbageCollectionThreshold != nullptr) {
     try {

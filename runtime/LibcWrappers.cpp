@@ -137,7 +137,18 @@ ssize_t SYM(read)(int fildes, void *buf, size_t nbyte) {
     // Reading symbolic input.
     ReadWriteShadow shadow(buf, result);
     std::generate(shadow.begin(), shadow.end(),
-                  []() { return _sym_get_input_byte(inputOffset++); });
+                  []() -> qsym::Expr* { 
+                    if (g_config.partialSymbolic) { 
+                      if (std::find(g_config.symbolicBytes.begin(), g_config.symbolicBytes.end(), inputOffset) != g_config.symbolicBytes.end()) {
+                        return _sym_get_input_byte(inputOffset++); 
+                      } else {
+                        inputOffset++;
+                        return nullptr;
+                      }
+                    } else {
+                      return _sym_get_input_byte(inputOffset++); 
+                    }
+                    });
   } else if (!isConcrete(buf, result)) {
     ReadWriteShadow shadow(buf, result);
     std::fill(shadow.begin(), shadow.end(), nullptr);
@@ -236,7 +247,16 @@ size_t SYM(fread)(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     // Reading symbolic input.
     ReadWriteShadow shadow(ptr, result * size);
     std::generate(shadow.begin(), shadow.end(),
-                  []() { return _sym_get_input_byte(inputOffset++); });
+                  []() -> qsym::Expr* { 
+                    if (g_config.partialSymbolic) { 
+                      if (std::find(g_config.symbolicBytes.begin(), g_config.symbolicBytes.end(), inputOffset) != g_config.symbolicBytes.end()) {
+                        return _sym_get_input_byte(inputOffset++); 
+                      } else {
+                        return nullptr;
+                      }
+                    } else {
+                      return _sym_get_input_byte(inputOffset++); 
+                    } });
   } else if (!isConcrete(ptr, result * size)) {
     ReadWriteShadow shadow(ptr, result * size);
     std::fill(shadow.begin(), shadow.end(), nullptr);

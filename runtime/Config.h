@@ -16,10 +16,14 @@
 #define CONFIG_H
 
 #include <string>
+#include <vector>
 
 struct Config {
   /// Should we allow symbolic data in the program?
   bool fullyConcrete = false;
+
+  bool partialSymbolic = false;
+  std::vector<uint64_t> symbolicBytes;
 
   /// The directory for storing new outputs.
   std::string outputDir = "/tmp/output";
