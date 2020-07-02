@@ -252,6 +252,7 @@ size_t SYM(fread)(void *ptr, size_t size, size_t nmemb, FILE *stream) {
                       if (std::find(g_config.symbolicBytes.begin(), g_config.symbolicBytes.end(), inputOffset) != g_config.symbolicBytes.end()) {
                         return _sym_get_input_byte(inputOffset++); 
                       } else {
+                        inputOffset++;
                         return nullptr;
                       }
                     } else {
