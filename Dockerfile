@@ -108,4 +108,5 @@ ENV SYMCC_LIBCXX_PATH=/libcxx_symcc_install
 USER ubuntu
 WORKDIR /home/ubuntu
 COPY sample.cpp /home/ubuntu/
+COPY test/file_input_2.c /home/ubuntu/
 RUN mkdir /tmp/output
